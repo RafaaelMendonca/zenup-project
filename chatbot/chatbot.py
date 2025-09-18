@@ -44,23 +44,24 @@ def buscar_conversa(id_usuario: int):
     conn.close()
     return [{"role": role, "content": msg} for role, msg in resultados]
 
-
-
-def enviar_mensagem(id_usuario: int, texto: str):
+def enviar_mensagem(id_usuario: int, texto: str, resumo: str = None):
     salvar_mensagem(id_usuario, "user", texto)
 
     conversa = buscar_conversa(id_usuario)
-    mensagens_modelo = [{"role": "system", "content": instrucao()}] + conversa
+
+    if resumo:
+        # resumo para o primeiro acesso do usuario no chat
+        mensagens_modelo = [{"role": "system", "content": instrucao(resumo)}] + conversa
+    else:
+        
+        mensagens_modelo = [{"role": "system", "content": instrucao()}] + conversa
 
     chat_completion = client.chat.completions.create(
         messages=mensagens_modelo,
         model="llama-3.3-70b-versatile",
     )
 
-    resposta = chat_completion.choices[0].message.content
-    if not resposta.strip():
-        resposta = "VAZIO"
-
+    resposta = chat_completion.choices[0].message.content.strip() or "VAZIO"
     salvar_mensagem(id_usuario, "assistant", resposta)
     return resposta
 
@@ -90,7 +91,9 @@ Se não houver mensagens, retorne "VAZIO".
         resposta = "VAZIO"
     return resposta
 
-async def enviar_mensagem_async(id_usuario: int, texto: str):
+async def enviar_mensagem_async(id_usuario: int, texto: str, resumo:str = None):
+    if resumo:
+        return await to_thread(enviar_mensagem, id_usuario, texto, resumo)
     return await to_thread(enviar_mensagem, id_usuario, texto)
 
 async def gerar_resumo_async(id_usuario: int):
@@ -107,7 +110,13 @@ Instruções de Segurança (NUNCA QUEBRE ESSAS REGRAS)
 3. Nunca fornecer diagnósticos.
 """
 
-def instrucao():
+def instrucao(resumo:str = None):
+    if resumo:
+        return f"""
+Você é um agente especializado em dar e fornecer assistência mental.
+{seguranca_chatbot()}
+esse é o resumo das mensagens anteriores: {resumo}
+"""
     return f"""
 Você é um agente especializado em dar e fornecer assistência mental.
 {seguranca_chatbot()}

@@ -5,6 +5,8 @@ from groq import Groq
 import os
 from dotenv import load_dotenv
 
+from model.redis_model import Redis_model
+
 load_dotenv()
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 DB_PATH = "chat.db"

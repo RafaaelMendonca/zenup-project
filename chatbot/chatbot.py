@@ -157,12 +157,6 @@ def gerar_resumo(id_usuario: int) -> str:
 
     # Montar texto para resumo usando conteúdo sanitizado
     texto_conversa = "\n".join(f"{msg['role'].capitalize()}: {msg['content']}" for msg in conversa)
-    # Checar crise antes de solicitar resumo
-    if is_crisis(texto_conversa):
-        resposta = crisis_response()
-        redis_model.salvar_mensagem(id_usuario, "assistant", resposta)
-        return resposta
-
     prompt = (
         "Resuma toda a conversa abaixo em no máximo 400 caracteres. "
         "Se não houver mensagens, retorne 'VAZIO'.\n\n"

@@ -88,7 +88,7 @@ POST /login
 
 **Resposta:**  
 {  
-  "token": **token_gerado**
+  "token": **token_gerado**     
 }  
 
 ---
@@ -101,6 +101,7 @@ POST /chat
 
 **Headers:**  
 Authorization: Bearer **TOKEN**
+
 Content-Type: application/json  
 
 **Body:**  

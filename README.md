@@ -125,6 +125,7 @@ Corpo da requisição:
 
 Cabeçalho (headers):  
 Authorization: Bearer **TOKEN**
+
 Content-Type: application/json  
 
 ---

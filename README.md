@@ -4,7 +4,6 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-Framework-brightgreen)
 ![Redis](https://img.shields.io/badge/Redis-Cache-red)
 ![Groq API](https://img.shields.io/badge/Groq-LLM-orange)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 ---
 

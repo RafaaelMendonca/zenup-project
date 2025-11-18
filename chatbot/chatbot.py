@@ -6,7 +6,7 @@ from typing import Optional
 from dotenv import load_dotenv
 from groq import Groq
 
-from model.redis_model import RedisModel
+from model.sqlite_model import SQLiteModel
 
 # ---------- Config ----------
 load_dotenv()
@@ -14,7 +14,7 @@ API_KEY = os.getenv("GROQ_API_KEY")
 if not API_KEY:
     raise EnvironmentError("GROQ_API_KEY não definido")
 client = Groq(api_key=API_KEY)
-redis_model = RedisModel()
+redis_model = SQLiteModel()
 
 # ---------- Configurações de segurança ----------
 MAX_MESSAGE_LENGTH = 4000
@@ -114,7 +114,7 @@ def enviar_mensagem(id_usuario: int, texto: str, resumo: Optional[str] = None) -
     """
     Fluxo seguro: sanitiza, detecta crise, e só então chama o modelo.
     """
-    if not redis_model.verificacao_redis():
+    if not redis_model.verificacao_sqlite():
         raise ConnectionError("Não foi possível conectar ao Redis.")
 
     texto_sanitizado = sanitize_text(texto)
@@ -179,7 +179,7 @@ def enviar_mensagem_proativa(id_usuario: int) -> str:
     Gera uma mensagem proativa automática para o usuário,
     mantendo toda a lógica de segurança.
     """
-    if not redis_model.verificacao_redis():
+    if not redis_model.verificacao_sqlite():
         raise ConnectionError("Não foi possível conectar ao Redis.")
 
     # Mensagem proativa padrão do sistema
